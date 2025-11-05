@@ -66,6 +66,7 @@ export default function PettyCashEnvelope() {
     vendorNumber: "",
     departmentTrackingNumber: "",
     voucherNumber: "",
+    pcEnvNumber: "",
   });
 
   const [appliedAgainstAdvance, setAppliedAgainstAdvance] = useState("");
@@ -154,6 +155,7 @@ export default function PettyCashEnvelope() {
       vendorNumber: "",
       departmentTrackingNumber: "",
       voucherNumber: "",
+      pcEnvNumber: "",
     });
     setLineItems(createEmptyLineItems());
     setAppliedAgainstAdvance("");

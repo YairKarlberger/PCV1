@@ -13,6 +13,7 @@ interface EnvelopeHeaderProps {
     vendorNumber: string;
     departmentTrackingNumber: string;
     voucherNumber: string;
+    pcEnvNumber: string;
   };
   onChange: (field: string, value: string) => void;
 }
@@ -21,7 +22,48 @@ export default function EnvelopeHeader({ formData, onChange }: EnvelopeHeaderPro
   return (
     <Card>
       <CardHeader className="pb-4">
-        <CardTitle className="text-2xl font-semibold">Petty Cash Envelope</CardTitle>
+        <div className="flex items-start justify-between gap-8">
+          <div className="flex-1 space-y-3">
+            <div className="flex items-center gap-3">
+              <label className="text-sm font-medium min-w-[70px]">Name:</label>
+              <Input
+                value={formData.name}
+                onChange={(e) => onChange('name', e.target.value)}
+                className="flex-1 max-w-md"
+                data-testid="input-name"
+              />
+            </div>
+            <div className="flex items-center gap-3">
+              <label className="text-sm font-medium min-w-[70px]">Position:</label>
+              <Input
+                value={formData.position}
+                onChange={(e) => onChange('position', e.target.value)}
+                className="flex-1 max-w-md"
+                data-testid="input-position"
+              />
+            </div>
+            <div className="flex items-center gap-3">
+              <label className="text-sm font-medium min-w-[70px]">Date:</label>
+              <Input
+                type="date"
+                value={formData.date}
+                onChange={(e) => onChange('date', e.target.value)}
+                className="flex-1 max-w-xs"
+                data-testid="input-date"
+              />
+            </div>
+          </div>
+          
+          <div className="flex items-center gap-3">
+            <label className="text-sm font-medium whitespace-nowrap">PC ENV #:</label>
+            <Input
+              value={formData.pcEnvNumber}
+              onChange={(e) => onChange('pcEnvNumber', e.target.value)}
+              className="w-40"
+              data-testid="input-pc-env-number"
+            />
+          </div>
+        </div>
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -62,37 +104,6 @@ export default function EnvelopeHeader({ formData, onChange }: EnvelopeHeaderPro
               onChange={(e) => onChange('voucherNumber', e.target.value)}
               className="flex-1"
               data-testid="input-voucher-number"
-            />
-          </div>
-
-          <div className="flex items-center gap-2">
-            <label className="text-sm font-medium min-w-[80px]">Name:</label>
-            <Input
-              value={formData.name}
-              onChange={(e) => onChange('name', e.target.value)}
-              className="flex-1"
-              data-testid="input-name"
-            />
-          </div>
-
-          <div className="flex items-center gap-2">
-            <label className="text-sm font-medium min-w-[80px]">Date:</label>
-            <Input
-              type="date"
-              value={formData.date}
-              onChange={(e) => onChange('date', e.target.value)}
-              className="flex-1"
-              data-testid="input-date"
-            />
-          </div>
-
-          <div className="flex items-center gap-2">
-            <label className="text-sm font-medium min-w-[80px]">Position:</label>
-            <Input
-              value={formData.position}
-              onChange={(e) => onChange('position', e.target.value)}
-              className="flex-1"
-              data-testid="input-position"
             />
           </div>
 

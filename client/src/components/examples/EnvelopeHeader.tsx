@@ -12,7 +12,8 @@ export default function EnvelopeHeaderExample() {
     checkCashReceived: "500.00",
     vendorNumber: "",
     departmentTrackingNumber: "DEPT-2025-001",
-    voucherNumber: ""
+    voucherNumber: "",
+    pcEnvNumber: "PC-2025-001"
   });
 
   const handleChange = (field: string, value: string) => {
