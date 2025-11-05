@@ -1,29 +1,6 @@
-# Python
-__pycache__/
-*.py[cod]
-*.pyo
-*.pyd
-*.sqlite3
-*.db
-.env
-.env.*
-venv/
-.venv/
-poetry.lock
-pip-wheel-metadata/
-.eggs/
-*.egg-info/
-
-# Node
-node_modules/
-package-lock.json
-yarn.lock
-pnpm-lock.yaml
-dist/
-.vite/
-
-# OS
+node_modules
+dist
 .DS_Store
-Thumbs.db
-.idea/
-.vscode/
+server/public
+vite.config.ts.*
+*.tar.gz
