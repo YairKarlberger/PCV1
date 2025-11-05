@@ -1,0 +1,14 @@
+fastapi
+uvicorn[standard]
+sqlalchemy
+alembic
+pydantic>=2
+pydantic-settings
+python-multipart
+weasyprint
+jinja2
+pillow
+pdfminer.six
+imagehash
+python-magic
+python-dotenv
