@@ -1,0 +1,10 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "petty-cash-backend"
+version = "0.1.0"
+description = "Backend API for the Petty Cash envelope app"
+requires-python = ">=3.11"
+dependencies = []
