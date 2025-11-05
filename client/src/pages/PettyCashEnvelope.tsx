@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import UserSelector from "@/components/UserSelector";
 import EnvelopeHeader from "@/components/EnvelopeHeader";
 import TransactionTable from "@/components/TransactionTable";
@@ -49,14 +49,13 @@ export default function PettyCashEnvelope() {
   
   const [users, setUsers] = useState(["John Doe", "Jane Smith", "Mike Johnson"]);
   const [selectedUser, setSelectedUser] = useState("John Doe");
+  const [vendors, setVendors] = useState(["Office Depot", "Staples", "Amazon", "Local Hardware", "Petty Cash"]);
   const [showClearDialog, setShowClearDialog] = useState(false);
   const [showAddUserDialog, setShowAddUserDialog] = useState(false);
   const [newUserName, setNewUserName] = useState("");
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
   const [formData, setFormData] = useState({
-    upm: "",
-    dept: "",
     name: "",
     date: new Date().toISOString().split('T')[0],
     audit: "",
@@ -66,7 +65,6 @@ export default function PettyCashEnvelope() {
     checkCashReceived: "",
     vendorNumber: "",
     departmentTrackingNumber: "",
-    receivedBy: "",
     voucherNumber: "",
   });
 
@@ -92,9 +90,6 @@ export default function PettyCashEnvelope() {
 
   const [lineItems, setLineItems] = useState<LineItemData[]>(createEmptyLineItems());
 
-  const PST_RATE = 0.07;
-  const GST_RATE = 0.05;
-
   const handleHeaderChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     setHasUnsavedChanges(true);
@@ -104,21 +99,19 @@ export default function PettyCashEnvelope() {
     setLineItems(prev => {
       const newItems = [...prev];
       newItems[index] = { ...newItems[index], [field]: value };
-      
-      if (field === 'netAmount') {
-        const netAmount = parseFloat(value) || 0;
-        const pstAmount = netAmount * PST_RATE;
-        const gstAmount = netAmount * GST_RATE;
-        const totalReceipt = netAmount + pstAmount + gstAmount;
-        
-        newItems[index].pstAmount = pstAmount > 0 ? pstAmount.toFixed(2) : '';
-        newItems[index].gstAmount = gstAmount > 0 ? gstAmount.toFixed(2) : '';
-        newItems[index].totalReceipt = totalReceipt > 0 ? totalReceipt.toFixed(2) : '';
-      }
-      
       return newItems;
     });
     setHasUnsavedChanges(true);
+  };
+
+  const handleAddVendor = (vendorName: string) => {
+    if (!vendors.includes(vendorName)) {
+      setVendors(prev => [...prev, vendorName]);
+      toast({
+        title: "Vendor Added",
+        description: `${vendorName} has been added to the vendor list.`,
+      });
+    }
   };
 
   const totals = lineItems.reduce((acc, item) => ({
@@ -151,8 +144,6 @@ export default function PettyCashEnvelope() {
 
   const confirmClear = () => {
     setFormData({
-      upm: "",
-      dept: "",
       name: "",
       date: new Date().toISOString().split('T')[0],
       audit: "",
@@ -162,7 +153,6 @@ export default function PettyCashEnvelope() {
       checkCashReceived: "",
       vendorNumber: "",
       departmentTrackingNumber: "",
-      receivedBy: "",
       voucherNumber: "",
     });
     setLineItems(createEmptyLineItems());
@@ -221,7 +211,9 @@ export default function PettyCashEnvelope() {
         
         <TransactionTable
           lineItems={lineItems}
+          vendors={vendors}
           onChange={handleLineItemChange}
+          onAddVendor={handleAddVendor}
           totals={totals}
         />
         

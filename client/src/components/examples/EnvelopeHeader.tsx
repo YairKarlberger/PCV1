@@ -3,8 +3,6 @@ import { useState } from 'react';
 
 export default function EnvelopeHeaderExample() {
   const [formData, setFormData] = useState({
-    upm: "",
-    dept: "Accounting",
     name: "John Doe",
     date: "2025-01-15",
     audit: "",
@@ -14,7 +12,6 @@ export default function EnvelopeHeaderExample() {
     checkCashReceived: "500.00",
     vendorNumber: "",
     departmentTrackingNumber: "DEPT-2025-001",
-    receivedBy: "Jane Smith",
     voucherNumber: ""
   });
 

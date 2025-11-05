@@ -20,25 +20,19 @@ export default function TransactionTableExample() {
   }));
 
   const [lineItems, setLineItems] = useState(createEmptyLineItems());
+  const [vendors, setVendors] = useState(["Office Depot", "Staples", "Amazon", "Local Hardware"]);
 
   const handleChange = (index: number, field: string, value: string) => {
     setLineItems(prev => {
       const newItems = [...prev];
       newItems[index] = { ...newItems[index], [field]: value };
-      
-      if (field === 'netAmount') {
-        const netAmount = parseFloat(value) || 0;
-        const pstAmount = netAmount * 0.07;
-        const gstAmount = netAmount * 0.05;
-        const totalReceipt = netAmount + pstAmount + gstAmount;
-        
-        newItems[index].pstAmount = pstAmount.toFixed(2);
-        newItems[index].gstAmount = gstAmount.toFixed(2);
-        newItems[index].totalReceipt = totalReceipt.toFixed(2);
-      }
-      
       return newItems;
     });
+  };
+
+  const handleAddVendor = (vendorName: string) => {
+    setVendors(prev => [...prev, vendorName]);
+    console.log('Added vendor:', vendorName);
   };
 
   const totals = lineItems.reduce((acc, item) => ({
@@ -48,5 +42,13 @@ export default function TransactionTableExample() {
     totalReceipt: acc.totalReceipt + (parseFloat(item.totalReceipt) || 0),
   }), { netAmount: 0, pstAmount: 0, gstAmount: 0, totalReceipt: 0 });
 
-  return <TransactionTable lineItems={lineItems} onChange={handleChange} totals={totals} />;
+  return (
+    <TransactionTable 
+      lineItems={lineItems} 
+      vendors={vendors}
+      onChange={handleChange} 
+      onAddVendor={handleAddVendor}
+      totals={totals} 
+    />
+  );
 }

@@ -1,6 +1,12 @@
+import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { Check, ChevronsUpDown } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface LineItemData {
   date: string;
@@ -21,7 +27,9 @@ interface LineItemData {
 
 interface TransactionTableProps {
   lineItems: LineItemData[];
+  vendors: string[];
   onChange: (index: number, field: string, value: string) => void;
+  onAddVendor: (vendorName: string) => void;
   totals: {
     netAmount: number;
     pstAmount: number;
@@ -30,7 +38,7 @@ interface TransactionTableProps {
   };
 }
 
-export default function TransactionTable({ lineItems, onChange, totals }: TransactionTableProps) {
+export default function TransactionTable({ lineItems, vendors, onChange, onAddVendor, totals }: TransactionTableProps) {
   return (
     <Card>
       <CardHeader className="pb-4">
@@ -72,12 +80,12 @@ export default function TransactionTable({ lineItems, onChange, totals }: Transa
                     />
                   </td>
                   <td className="p-1">
-                    <Input
+                    <VendorCombobox
                       value={item.toWhomPaid}
-                      onChange={(e) => onChange(index, 'toWhomPaid', e.target.value)}
-                      className="h-8 px-2 text-sm border-0 focus:border"
-                      placeholder="Vendor name"
-                      data-testid={`input-to-whom-paid-${index}`}
+                      vendors={vendors}
+                      onChange={(value) => onChange(index, 'toWhomPaid', value)}
+                      onAddVendor={onAddVendor}
+                      index={index}
                     />
                   </td>
                   <td className="p-1">
@@ -157,19 +165,37 @@ export default function TransactionTable({ lineItems, onChange, totals }: Transa
                     />
                   </td>
                   <td className="p-1">
-                    <div className="h-8 px-2 flex items-center justify-end text-sm bg-muted/50 rounded text-muted-foreground" data-testid={`text-pst-amount-${index}`}>
-                      {item.pstAmount ? `$${parseFloat(item.pstAmount).toFixed(2)}` : '-'}
-                    </div>
+                    <Input
+                      type="number"
+                      step="0.01"
+                      value={item.pstAmount}
+                      onChange={(e) => onChange(index, 'pstAmount', e.target.value)}
+                      className="h-8 px-2 text-sm text-right border-0 focus:border"
+                      placeholder="0.00"
+                      data-testid={`input-pst-amount-${index}`}
+                    />
                   </td>
                   <td className="p-1">
-                    <div className="h-8 px-2 flex items-center justify-end text-sm bg-muted/50 rounded text-muted-foreground" data-testid={`text-gst-amount-${index}`}>
-                      {item.gstAmount ? `$${parseFloat(item.gstAmount).toFixed(2)}` : '-'}
-                    </div>
+                    <Input
+                      type="number"
+                      step="0.01"
+                      value={item.gstAmount}
+                      onChange={(e) => onChange(index, 'gstAmount', e.target.value)}
+                      className="h-8 px-2 text-sm text-right border-0 focus:border"
+                      placeholder="0.00"
+                      data-testid={`input-gst-amount-${index}`}
+                    />
                   </td>
                   <td className="p-1">
-                    <div className="h-8 px-2 flex items-center justify-end text-sm font-semibold bg-muted/50 rounded" data-testid={`text-total-receipt-${index}`}>
-                      {item.totalReceipt ? `$${parseFloat(item.totalReceipt).toFixed(2)}` : '-'}
-                    </div>
+                    <Input
+                      type="number"
+                      step="0.01"
+                      value={item.totalReceipt}
+                      onChange={(e) => onChange(index, 'totalReceipt', e.target.value)}
+                      className="h-8 px-2 text-sm text-right font-semibold border-0 focus:border"
+                      placeholder="0.00"
+                      data-testid={`input-total-receipt-${index}`}
+                    />
                   </td>
                 </tr>
               ))}
@@ -185,5 +211,93 @@ export default function TransactionTable({ lineItems, onChange, totals }: Transa
         </div>
       </CardContent>
     </Card>
+  );
+}
+
+interface VendorComboboxProps {
+  value: string;
+  vendors: string[];
+  onChange: (value: string) => void;
+  onAddVendor: (vendorName: string) => void;
+  index: number;
+}
+
+function VendorCombobox({ value, vendors, onChange, onAddVendor, index }: VendorComboboxProps) {
+  const [open, setOpen] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
+
+  const handleSelect = (selectedValue: string) => {
+    onChange(selectedValue);
+    setOpen(false);
+    setSearchValue("");
+  };
+
+  const handleAddNew = () => {
+    if (searchValue.trim() && !vendors.includes(searchValue.trim())) {
+      onAddVendor(searchValue.trim());
+      onChange(searchValue.trim());
+      setSearchValue("");
+      setOpen(false);
+    }
+  };
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button
+          variant="outline"
+          role="combobox"
+          aria-expanded={open}
+          className="h-8 w-full justify-between px-2 text-sm border-0 focus:border font-normal"
+          data-testid={`button-vendor-${index}`}
+        >
+          <span className="truncate">{value || "Select vendor..."}</span>
+          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-[200px] p-0" align="start">
+        <Command>
+          <CommandInput 
+            placeholder="Search or add vendor..." 
+            value={searchValue}
+            onValueChange={setSearchValue}
+            data-testid={`input-vendor-search-${index}`}
+          />
+          <CommandList>
+            <CommandEmpty>
+              <div className="p-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full"
+                  onClick={handleAddNew}
+                  data-testid={`button-add-vendor-${index}`}
+                >
+                  Add "{searchValue}"
+                </Button>
+              </div>
+            </CommandEmpty>
+            <CommandGroup>
+              {vendors.map((vendor) => (
+                <CommandItem
+                  key={vendor}
+                  value={vendor}
+                  onSelect={handleSelect}
+                  data-testid={`option-vendor-${vendor}-${index}`}
+                >
+                  <Check
+                    className={cn(
+                      "mr-2 h-4 w-4",
+                      value === vendor ? "opacity-100" : "opacity-0"
+                    )}
+                  />
+                  {vendor}
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </CommandList>
+        </Command>
+      </PopoverContent>
+    </Popover>
   );
 }
