@@ -12,3 +12,5 @@ pdfminer.six
 imagehash
 python-magic
 python-dotenv
+PyPDF2
+reportlab

@@ -13,12 +13,12 @@
 3. `npm run dev` (http://localhost:5173)
 
 ## Smoke Test (MVP)
-- Open frontend, click **Create Draft**, then **Submit Sample**.
+- Open frontend, click **Create Draft**, upload a few receipts (JPG/PNG/PDF) under **Receipts Upload**, then **Submit Envelope**.
 - Backend will assign `ENV00001`, render envelope PDF (template with correct columns), and write files to:
   `storage/petty-cash/SMITH, Alex/ENV00001/`
 - You should see:
   - `ENV00001-envelope.pdf` (formatted to template)
-  - `ENV00001-receipts.pdf` (placeholder page)
+  - `ENV00001-receipts.pdf` (merged receipts pack from uploaded files)
   - `ENV00001.json`
 
 Notes:
@@ -26,3 +26,5 @@ Notes:
 - Totals & owed logic in PDF are computed from line items and float.
 - Coding strip fields exist and render; front-end editing to be expanded.
 - Alembic can be added later; dev uses `Base.metadata.create_all`.
+- Supported upload types: JPG, JPEG, PNG, PDF.
+- Uploaded receipt files are stored under `STORAGE_ROOT/tmp/{draftId}/` until submission.

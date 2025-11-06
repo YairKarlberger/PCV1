@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
 from app.db.base import Base
 from app.db.session import engine
-from app.routes import drafts, envelopes, health
+from app.routes import drafts, envelopes, health, receipts
 from app.services.storage import ensure_storage
 
 app = FastAPI(title="Petty Cash API")
@@ -27,6 +27,7 @@ def on_startup() -> None:
 app.include_router(health.router, prefix="/api")
 app.include_router(drafts.router, prefix="/api")
 app.include_router(envelopes.router, prefix="/api")
+app.include_router(receipts.router, prefix="/api")
 
 
 @app.get("/")
