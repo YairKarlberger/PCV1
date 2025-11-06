@@ -1,0 +1,116 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>Petty Cash Envelope</title>
+  <style>
+    body { font-family: Arial, sans-serif; font-size: 11px; margin: 24px; }
+    h1 { font-size: 16px; margin: 0 0 8px; }
+    .row { display: flex; gap: 12px; margin-bottom: 6px; }
+    .cell { flex: 1; }
+    table { border-collapse: collapse; width: 100%; margin-top: 8px; }
+    th, td { border: 1px solid #333; padding: 4px; vertical-align: top; }
+    th { background: #eee; }
+    .small { font-size: 10px; color: #333; }
+    .totals { margin-top: 8px; }
+    .totals .row { gap: 8px; }
+    .sign { margin-top: 18px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+    .box { border: 1px solid #333; padding: 6px; }
+    .right { text-align: right; }
+  </style>
+</head>
+<body>
+  <h1>Petty Cash Envelope</h1>
+
+  <div class="row">
+    <div class="cell"><strong>Production:</strong> {{ env.production or "" }}</div>
+    <div class="cell"><strong>Dept:</strong> {{ env.dept or "" }}</div>
+    <div class="cell"><strong>ENV #:</strong> {{ env.env_no or "DRAFT" }}</div>
+  </div>
+  <div class="row">
+    <div class="cell"><strong>Custodian First:</strong> {{ env.custodian_first }}</div>
+    <div class="cell"><strong>Custodian Last:</strong> {{ env.custodian_last }}</div>
+    <div class="cell"><strong>Currency:</strong> {{ env.currency }}</div>
+  </div>
+  <div class="row">
+    <div class="cell"><strong>Date From:</strong> {{ env.start_date or "" }}</div>
+    <div class="cell"><strong>Date To:</strong> {{ env.end_date or "" }}</div>
+    <div class="cell"><strong>Float:</strong> {{ env.float_amount }}</div>
+  </div>
+
+  <div class="box">
+    <div class="row small"><strong>Coding:</strong></div>
+    <div class="row small">
+      <div class="cell"><strong>CO</strong>: {{ env.co or "" }}</div>
+      <div class="cell"><strong>LOC</strong>: {{ env.loc or "" }}</div>
+      <div class="cell"><strong>EPI</strong>: {{ env.epi or "" }}</div>
+      <div class="cell"><strong>DETL</strong>: {{ env.detl or "" }}</div>
+      <div class="cell"><strong>SET</strong>: {{ env.set or "" }}</div>
+      <div class="cell"><strong>FF1</strong>: {{ env.ff1 or "" }}</div>
+      <div class="cell"><strong>FF4</strong>: {{ env.ff4 or "" }}</div>
+    </div>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>To Whom Paid</th>
+        <th>Purpose/Description</th>
+        <th class="right">Net</th>
+        <th class="right">PST</th>
+        <th class="right">GST</th>
+        <th class="right">HST</th>
+        <th class="right">Tip</th>
+        <th class="right">Total</th>
+        <th>Voucher #</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for li in lines %}
+      <tr>
+        <td>{{ li.date or "" }}</td>
+        <td>{{ li.vendor or "" }}</td>
+        <td>{{ li.description or "" }}</td>
+        <td class="right">{{ li.net or "" }}</td>
+        <td class="right">{{ li.pst or "" }}</td>
+        <td class="right">{{ li.gst or "" }}</td>
+        <td class="right">{{ li.hst or "" }}</td>
+        <td class="right">{{ li.tip or "" }}</td>
+        <td class="right">{{ li.total or "" }}</td>
+        <td>{{ li.voucher_no or "" }}</td>
+      </tr>
+      {% endfor %}
+      {% if lines|length == 0 %}
+      <tr><td colspan="10" class="small">No line items.</td></tr>
+      {% endif %}
+    </tbody>
+  </table>
+
+  <div class="totals box">
+    <div class="row">
+      <div class="cell"><strong>Net Subtotal:</strong> {{ totals.net }}</div>
+      <div class="cell"><strong>PST:</strong> {{ totals.pst }}</div>
+      <div class="cell"><strong>GST:</strong> {{ totals.gst }}</div>
+      <div class="cell"><strong>HST:</strong> {{ totals.hst }}</div>
+      <div class="cell"><strong>Tip:</strong> {{ totals.tip }}</div>
+      <div class="cell"><strong>Grand Total:</strong> {{ totals.grand }}</div>
+      <div class="cell"><strong>Float:</strong> {{ env.float_amount }}</div>
+      <div class="cell"><strong>Owed to Production:</strong> {{ totals.owed_to_prod }}</div>
+      <div class="cell"><strong>Owed to Custodian:</strong> {{ totals.owed_to_cust }}</div>
+    </div>
+  </div>
+
+  <div class="sign">
+    <div class="box small">
+      <strong>Custodian</strong><br/>Name/Title/Date: ___________________________
+    </div>
+    <div class="box small">
+      <strong>Supervisor</strong><br/>Name/Title/Date: ___________________________
+    </div>
+    <div class="box small">
+      <strong>Accounting</strong><br/>Name/Title/Date: ___________________________
+    </div>
+  </div>
+</body>
+</html>
