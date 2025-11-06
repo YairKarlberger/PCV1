@@ -11,18 +11,3 @@ externalPort = 80
 [[ports]]
 localPort = 8000
 externalPort = 8000
-
-[workflows]
-
-[[workflows.workflow]]
-name = "Workflow"
-mode = "parallel"
-author = 40956564
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "cd backend && uvicorn app.main:app --host 0.0.0.0 --port 8000"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "cd frontend && npx vite --host 0.0.0.0 --port 5000"
